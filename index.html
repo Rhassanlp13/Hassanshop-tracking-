@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuNombre Envíos - Seguimiento</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .progreso {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .paso {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 8px;
+            text-align: center;
+            border-radius: 8px;
+            background: #f0f0f0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .paso.completado {
+            background: #4caf50;
+            color: white;
+        }
+
+        .paso.actual {
+            background: #ff9800;
+            color: white;
+        }
+
+        .paso.pendiente {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .historial {
+            margin-top: 30px;
+        }
+
+        .historial h3 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .historial ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .historial li {
+            border-left: 3px solid #007bff;
+            margin: 15px 0;
+            padding-left: 15px;
+            background: #fafafa;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Seguimiento de tu pedido</h1>
+        <div class="search-box">
+            <input type="text" id="codigo" placeholder="Ingresa tu código de seguimiento (ej: SHEIN-00123)">
+            <button id="buscar">Buscar</button>
+        </div>
+        <div id="resultado"></div>
+    </div>
+    <footer>TuNombre Envíos - Tu confianza en cada paso</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="tracking.js"></script>
+</body>
+
+</html>
