@@ -1,211 +1,156 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Hassanshop - Seguimiento de envíos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuNombre Envíos - Seguimiento</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fb;
+            max-width: 900px;
+            margin: 0 auto;
             padding: 20px;
-            min-height: 100vh;
+            background: #f5f5f5;
         }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
             background: white;
-            border-radius: 28px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-            overflow: hidden;
-            padding: 24px 20px 32px;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            font-size: 1.8rem;
+            color: #333;
             text-align: center;
-            color: #1e2a3a;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .sub {
-            text-align: center;
-            color: #5a6874;
-            font-size: 0.9rem;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
         }
 
         .search-box {
             display: flex;
-            gap: 12px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
         }
 
-        .search-box input {
+        input {
             flex: 1;
-            padding: 14px 18px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 60px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.2s;
-            background: #fff;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
         }
 
-        .search-box input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-        }
-
-        .search-box button {
+        button {
+            padding: 12px 24px;
             background: #007bff;
             color: white;
             border: none;
-            border-radius: 60px;
-            padding: 0 28px;
-            font-weight: 600;
-            font-size: 1rem;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.2s;
+            font-size: 16px;
+            transition: background 0.3s;
         }
 
-        .search-box button:hover {
+        button:hover {
             background: #0056b3;
         }
 
-        /* Timeline estilo moderno */
-        .timeline {
-            margin-top: 20px;
-            position: relative;
-            padding-left: 24px;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 12px;
-            bottom: 12px;
-            width: 2.5px;
-            background: linear-gradient(to bottom, #007bff, #cbd5e0);
-            border-radius: 2px;
-        }
-
-        .evento {
-            position: relative;
-            margin-bottom: 28px;
-            padding-left: 20px;
-            background: #ffffff;
-            border-radius: 20px;
-            transition: all 0.2s;
-        }
-
-        .evento::before {
-            content: '';
-            position: absolute;
-            left: -18px;
-            top: 6px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #007bff;
-            border: 3px solid white;
-            box-shadow: 0 0 0 2px #007bff;
-            z-index: 2;
-        }
-
-        .evento.titulo {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #0f172a;
-            margin-bottom: 6px;
-        }
-
-        .evento.ubicacion {
-            font-size: 0.9rem;
-            color: #2d3a48;
-            margin-bottom: 6px;
+        .progreso {
             display: flex;
-            align-items: center;
-            gap: 6px;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 30px 0;
         }
 
-        .evento.detalle {
-            font-size: 0.85rem;
-            color: #4a5b6e;
-            background: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 16px;
-            margin: 8px 0;
-            display: inline-block;
-        }
-
-        .evento.fecha {
-            font-size: 0.75rem;
-            color: #7e8c9e;
-            margin-top: 6px;
-            letter-spacing: 0.3px;
-        }
-
-        .error, .loading {
+        .paso {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 8px;
             text-align: center;
-            padding: 32px 20px;
-            background: #fff5f5;
-            border-radius: 24px;
-            color: #c53030;
+            border-radius: 8px;
+            background: #f0f0f0;
+            font-size: 14px;
             font-weight: 500;
         }
 
+        .paso.completado {
+            background: #4caf50;
+            color: white;
+        }
+
+        .paso.actual {
+            background: #ff9800;
+            color: white;
+        }
+
+        .paso.pendiente {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .historial {
+            margin-top: 30px;
+        }
+
+        .historial h3 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .historial ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .historial li {
+            border-left: 3px solid #007bff;
+            margin: 15px 0;
+            padding-left: 15px;
+            background: #fafafa;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            padding: 20px;
+        }
+
         .loading {
-            background: #eef2ff;
-            color: #1e40af;
+            text-align: center;
+            padding: 20px;
+            color: #666;
         }
 
         footer {
             text-align: center;
-            margin-top: 28px;
-            font-size: 0.7rem;
-            color: #94a3b8;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-            .container {
-                padding: 20px 16px;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-            .search-box button {
-                padding: 0 20px;
-            }
+            margin-top: 30px;
+            color: #888;
+            font-size: 12px;
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <h1>📦 Hassanshop</h1>
-    <div class="sub">Seguimiento de tu pedido</div>
-    <div class="search-box">
-        <input type="text" id="codigo" placeholder="Ej: SHEIN-00123">
-        <button id="buscar">Buscar</button>
-    </div>
-    <div id="resultado"></div>
-</div>
-<footer>Hassanshop · Tu confianza en cada paso</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="tracking.js"></script>
+<body>
+    <div class="container">
+        <h1>Seguimiento de tu pedido</h1>
+        <div class="search-box">
+            <input type="text" id="codigo" placeholder="Ingresa tu código de seguimiento (ej: SHEIN-00123)">
+            <button id="buscar">Buscar</button>
+        </div>
+        <div id="resultado"></div>
+    </div>
+    <footer>TuNombre Envíos - Tu confianza en cada paso</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="tracking.js"></script>
 </body>
+
 </html>

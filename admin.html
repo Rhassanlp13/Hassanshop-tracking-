@@ -1,131 +1,180 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Hassanshop Envíos</title>
+    <title>Admin - TuNombre Envíos</title>
     <style>
-        *{box-sizing:border-box;}
-        body{
-            font-family:'Segoe UI',sans-serif;
-            background:#eef2f5;
-            margin:0;
-            padding:20px;
+        * {
+            box-sizing: border-box;
         }
-        .card{
-            background:white;
-            border-radius:24px;
-            padding:24px;
-            margin-bottom:24px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.05);
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f2f5;
         }
-        h1,h2{color:#1e2a3a;margin-top:0;}
-        input,button,textarea{
-            padding:12px 16px;
-            border:1px solid #cbd5e0;
-            border-radius:60px;
-            font-size:14px;
-            width:100%;
-            max-width:400px;
-            margin-bottom:12px;
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        button{
-            background:#007bff;
-            color:white;
-            border:none;
-            cursor:pointer;
-            width:auto;
-            transition:0.2s;
+
+        h1,
+        h2 {
+            color: #333;
+            margin-top: 0;
         }
-        button:hover{background:#0056b3;}
-        .form-group{margin-bottom:16px;}
-        .form-group label{font-weight:600;display:block;margin-bottom:6px;}
-        .pedido-card{
-            border:1px solid #e2e8f0;
-            border-radius:20px;
-            padding:16px;
-            margin-bottom:16px;
-            background:#fafcff;
+
+        input,
+        button {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
         }
-        .pedido-card h3{color:#007bff;margin:0 0 8px;}
-        button.logout{background:#dc3545;float:right;}
-        .login-box{max-width:400px;margin:40px auto;}
-        .modal{
-            display:none;
-            position:fixed;
-            top:0;left:0;
-            width:100%;height:100%;
-            background:rgba(0,0,0,0.5);
-            justify-content:center;
-            align-items:center;
-            z-index:1000;
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-        .modal-content{
-            background:white;
-            padding:24px;
-            border-radius:32px;
-            width:90%;
-            max-width:450px;
+
+        button:hover {
+            background: #0056b3;
         }
-        .modal-content input,.modal-content textarea{
-            width:100%;
-            margin-bottom:12px;
-            border-radius:16px;
+
+        .form-group {
+            margin-bottom: 15px;
         }
-        hr{margin:16px 0;}
-        @media (max-width:600px){
-            body{padding:12px;}
-            .card{padding:18px;}
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .pedido-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+
+        .pedido-card h3 {
+            margin: 0 0 10px 0;
+            color: #007bff;
+        }
+
+        .pedido-card p {
+            margin: 5px 0;
+        }
+
+        button.logout {
+            background: #dc3545;
+            float: right;
+        }
+
+        button.logout:hover {
+            background: #c82333;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 50px auto;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        hr {
+            margin: 15px 0;
         }
     </style>
 </head>
+
 <body>
-<div id="login-container" class="card login-box">
-    <h2>Acceso Admin</h2>
-    <div class="form-group"><label>Email</label><input type="email" id="email"></div>
-    <div class="form-group"><label>Contraseña</label><input type="password" id="password"></div>
-    <button id="loginBtn">Ingresar</button>
-    <div id="loginError" class="error"></div>
-</div>
 
-<div id="admin-panel" style="display:none;">
-    <div class="card">
-        <h1>📦 Hassanshop Admin</h1>
-        <button id="logoutBtn" class="logout">Cerrar sesión</button>
-        <div style="clear:both"></div>
+    <div id="login-container" class="card login-box">
+        <h2>Acceso Administrador</h2>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="admin@ejemplo.com">
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="password" placeholder="********">
+        </div>
+        <button id="loginBtn">Iniciar sesión</button>
+        <div id="loginError" class="error"></div>
     </div>
-    <div class="card">
-        <h2>➕ Nuevo pedido</h2>
-        <form id="form-nuevo">
-            <div class="form-group"><label>Código</label><input type="text" id="codigo" required></div>
-            <div class="form-group"><label>Cliente</label><input type="text" id="nombre" required></div>
-            <div class="form-group"><label>Email</label><input type="email" id="emailCliente" required></div>
-            <div class="form-group"><label>Teléfono</label><input type="text" id="telefono"></div>
-            <div class="form-group"><label>Descripción</label><input type="text" id="descripcion" required></div>
-            <button type="submit">Crear</button>
-        </form>
-    </div>
-    <div class="card">
-        <h2>📋 Pedidos</h2>
-        <div id="lista-pedidos"></div>
-    </div>
-</div>
 
-<div id="eventoModal" class="modal">
-    <div class="modal-content">
-        <h3>➕ Agregar evento</h3>
-        <input type="text" id="evento_titulo" placeholder="Título (ej: En movimiento)">
-        <input type="text" id="evento_ubicacion" placeholder="Ubicación">
-        <textarea id="evento_detalle" rows="2" placeholder="Detalle adicional"></textarea>
-        <input type="datetime-local" id="evento_fecha" step="1">
-        <div style="display:flex;gap:10px;margin-top:12px;">
-            <button id="guardarEventoBtn">Guardar</button>
-            <button id="cancelarEventoBtn" style="background:#6c757d;">Cancelar</button>
+    <div id="admin-panel" style="display: none;">
+        <div class="card">
+            <h1>Panel de Administración</h1>
+            <button id="logoutBtn" class="logout">Cerrar sesión</button>
+            <div style="clear:both"></div>
+        </div>
+
+        <div class="card">
+            <h2>➕ Crear nuevo pedido</h2>
+            <form id="form-nuevo">
+                <div class="form-group">
+                    <label>Número de seguimiento We Ship You (opcional)</label>
+                    <input type="text" id="trackingWsy" placeholder="Ej: WSY7S1HWW4MSCU">
+                </div>
+                <div class="form-group">
+                    <label>Destino final (ej: Pilón, Granma, Cuba)</label>
+                    <input type="text" id="destinoFinal" placeholder="Ciudad, Provincia, País">
+                </div>
+                <div class="form-group">
+                    <label>Código único *</label>
+                    <input type="text" id="codigo" placeholder="Ej: SHEIN-00123" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre del cliente *</label>
+                    <input type="text" id="nombre" placeholder="Nombre completo" required>
+                </div>
+                <div class="form-group">
+                    <label>Email del cliente *</label>
+                    <input type="email" id="emailCliente" placeholder="cliente@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono (opcional)</label>
+                    <input type="text" id="telefono" placeholder="+53 5XXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Descripción del pedido *</label>
+                    <input type="text" id="descripcion" placeholder="Vestido rojo + 2 blusas" required>
+                </div>
+                <button type="submit">Crear pedido</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>📦 Lista de pedidos</h2>
+            <div id="lista-pedidos"></div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="admin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js"></script>
 </body>
+
 </html>
