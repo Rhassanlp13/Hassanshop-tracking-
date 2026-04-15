@@ -4,137 +4,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuNombre Envíos - Seguimiento</title>
+    <title>📦 HassanShop Envíos - Seguimiento</title>
     <style>
         * {
-            box-sizing: border-box;
-        }
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+    background: #f5f5f5;
+}
 
-        .container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+.container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+}
 
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
+.search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+}
 
-        input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
+input {
+    flex: 1;
+    min-width: 180px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
 
-        button {
-            padding: 12px 24px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
+button {
+    padding: 12px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
 
-        button:hover {
-            background: #0056b3;
-        }
+button:hover {
+    background: #0056b3;
+}
 
-        .progreso {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 30px 0;
-        }
+/* Para pantallas muy pequeñas (menos de 480px) */
+@media (max-width: 480px) {
+    .search-box {
+        flex-direction: column;
+    }
+    button {
+        width: 100%;
+        white-space: normal;
+    }
+    .progreso {
+        flex-direction: column;
+    }
+}
 
-        .paso {
-            flex: 1;
-            min-width: 120px;
-            padding: 12px 8px;
-            text-align: center;
-            border-radius: 8px;
-            background: #f0f0f0;
-            font-size: 14px;
-            font-weight: 500;
-        }
+.progreso {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 30px 0;
+}
 
-        .paso.completado {
-            background: #4caf50;
-            color: white;
-        }
+.paso {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 8px;
+    background: #f0f0f0;
+    font-size: 14px;
+    font-weight: 500;
+}
 
-        .paso.actual {
-            background: #ff9800;
-            color: white;
-        }
+.paso.completado {
+    background: #4caf50;
+    color: white;
+}
 
-        .paso.pendiente {
-            background: #e0e0e0;
-            color: #666;
-        }
+.paso.actual {
+    background: #ff9800;
+    color: white;
+}
 
-        .historial {
-            margin-top: 30px;
-        }
+.paso.pendiente {
+    background: #e0e0e0;
+    color: #666;
+}
 
-        .historial h3 {
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
+.historial {
+    margin-top: 30px;
+}
 
-        .historial ul {
-            list-style: none;
-            padding: 0;
-        }
+.historial h3 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
 
-        .historial li {
-            border-left: 3px solid #007bff;
-            margin: 15px 0;
-            padding-left: 15px;
-            background: #fafafa;
-            padding: 10px 15px;
-            border-radius: 6px;
-        }
+.historial ul {
+    list-style: none;
+    padding: 0;
+}
 
-        .error {
-            color: red;
-            text-align: center;
-            padding: 20px;
-        }
+.historial li {
+    border-left: 3px solid #007bff;
+    margin: 15px 0;
+    padding-left: 15px;
+    background: #fafafa;
+    padding: 10px 15px;
+    border-radius: 6px;
+    word-break: break-word;
+}
 
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
+.error {
+    color: red;
+    text-align: center;
+    padding: 20px;
+}
 
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #888;
-            font-size: 12px;
-        }
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #888;
+    font-size: 12px;
+}
+
+/* Mejoras para el contenido del historial en móvil */
+.ubicacion {
+    font-size: 0.9em;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.comentario {
+    font-size: 0.85em;
+    color: #555;
+    font-style: italic;
+}
+
+.paquetes {
+    font-size: 0.85em;
+    color: #e67e22;
+    font-weight: bold;
+}
+
+.destino {
+    background: #e8f4fd;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1rem;
+    border-left: 4px solid #007bff;
+}
     </style>
 </head>
 
