@@ -21,7 +21,33 @@ const formNuevo = document.getElementById('form-nuevo');
 const listaDiv = document.getElementById('lista-pedidos');
 const loginError = document.getElementById('loginError');
 
-// Verificar sesión actual
+// ===================== GENERADOR DE CÓDIGOS =====================
+function generarCodigoHassanshop() {
+    const prefijo = "Hassanshop-";
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let resultado = '';
+    for (let i = 0; i < 6; i++) {
+        resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return prefijo + resultado;
+}
+
+async function generarCodigoUnico() {
+    let existe = true;
+    let nuevoCodigo = '';
+    while (existe) {
+        nuevoCodigo = generarCodigoHassanshop();
+        const { data, error } = await supabaseClient
+            .from('pedidos')
+            .select('codigo')
+            .eq('codigo', nuevoCodigo)
+            .maybeSingle();
+        if (!data) existe = false;
+    }
+    return nuevoCodigo;
+}
+
+// ===================== AUTENTICACIÓN =====================
 supabaseClient.auth.getSession().then(({ data: { session } }) => {
     if (session) showAdminPanel();
     else showLogin();
@@ -41,6 +67,13 @@ function showAdminPanel() {
     loginContainer.style.display = 'none';
     adminPanel.style.display = 'block';
     cargarPedidos();
+    // Sugerir código automáticamente al cargar el panel
+    const codigoInput = document.getElementById('codigo');
+    if (codigoInput && !codigoInput.value) {
+        generarCodigoUnico().then(codigo => {
+            codigoInput.value = codigo;
+        });
+    }
 }
 
 // Login
@@ -57,7 +90,7 @@ logoutBtn.addEventListener('click', async () => {
     await supabaseClient.auth.signOut();
 });
 
-// Cargar todos los pedidos con botones mejorados
+// ===================== LISTAR PEDIDOS =====================
 async function cargarPedidos() {
     const { data: pedidos, error } = await supabaseClient
         .from('pedidos')
@@ -88,16 +121,33 @@ async function cargarPedidos() {
     }
 }
 
-// Crear nuevo pedido (incluyendo destino_final y tracking_wsy)
+// ===================== CREAR NUEVO PEDIDO =====================
 formNuevo.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const codigo = document.getElementById('codigo').value.trim();
+    let codigo = document.getElementById('codigo').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
     const emailCliente = document.getElementById('emailCliente').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
     const destinoFinal = document.getElementById('destinoFinal')?.value.trim() || '';
     const trackingWsy = document.getElementById('trackingWsy')?.value.trim() || '';
+
+    // Si no se ingresó código manual, generar uno automático
+    if (!codigo) {
+        codigo = await generarCodigoUnico();
+        document.getElementById('codigo').value = codigo;
+    } else {
+        // Verificar que el código ingresado no exista ya
+        const { data: existe } = await supabaseClient
+            .from('pedidos')
+            .select('codigo')
+            .eq('codigo', codigo)
+            .maybeSingle();
+        if (existe) {
+            alert('El código ya existe. Usa otro o genera uno automático.');
+            return;
+        }
+    }
 
     const { data: pedido, error: insertError } = await supabaseClient
         .from('pedidos')
@@ -137,10 +187,13 @@ formNuevo.addEventListener('submit', async (e) => {
         alert('Pedido creado correctamente');
         formNuevo.reset();
         cargarPedidos();
+        // Generar nuevo código sugerido para el siguiente pedido
+        const nuevoCodigo = await generarCodigoUnico();
+        document.getElementById('codigo').value = nuevoCodigo;
     }
 });
 
-// Editar estado (básico, solo número)
+// ===================== EDITAR ESTADO (BÁSICO) =====================
 window.editarEstado = async (id, estadoActual) => {
     const nuevoEstadoNum = parseInt(prompt(`Estado actual: ${estadosNombres[estadoActual - 1]}\n\nNuevo estado (1-6):\n1 = ${estadosNombres[0]}\n2 = ${estadosNombres[1]}\n3 = ${estadosNombres[2]}\n4 = ${estadosNombres[3]}\n5 = ${estadosNombres[4]}\n6 = ${estadosNombres[5]}`, estadoActual + 1));
     if (isNaN(nuevoEstadoNum) || nuevoEstadoNum < 1 || nuevoEstadoNum > 6) {
@@ -182,7 +235,7 @@ window.editarEstado = async (id, estadoActual) => {
     }
 };
 
-// Agregar evento detallado (ubicación, comentario, paquetes restantes)
+// ===================== AGREGAR EVENTO DETALLADO =====================
 window.agregarEvento = async (pedidoId, estadoActual) => {
     const estado = prompt(`Estado (número 1-6):\n1 = ${estadosNombres[0]}\n2 = ${estadosNombres[1]}\n3 = ${estadosNombres[2]}\n4 = ${estadosNombres[3]}\n5 = ${estadosNombres[4]}\n6 = ${estadosNombres[5]}`, "5");
     if (!estado || estado < 1 || estado > 6) return;
@@ -223,6 +276,7 @@ window.agregarEvento = async (pedidoId, estadoActual) => {
     cargarPedidos();
 };
 
+// ===================== ESCAPE HTML =====================
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function (m) {
@@ -232,3 +286,16 @@ function escapeHtml(str) {
         return m;
     });
 }
+
+// ===================== BOTÓN GENERAR MANUAL (opcional) =====================
+// Si existe el botón "generarCodigo" en el HTML, lo conectamos
+document.addEventListener('DOMContentLoaded', () => {
+    const generarBtn = document.getElementById('generarCodigo');
+    if (generarBtn) {
+        generarBtn.addEventListener('click', async () => {
+            const codigoInput = document.getElementById('codigo');
+            const nuevoCodigo = await generarCodigoUnico();
+            codigoInput.value = nuevoCodigo;
+        });
+    }
+});
