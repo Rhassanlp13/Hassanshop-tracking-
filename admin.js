@@ -35,14 +35,25 @@ function generarCodigoHassanshop() {
 async function generarCodigoUnico() {
     let existe = true;
     let nuevoCodigo = '';
-    while (existe) {
+    let intentos = 0;
+    const maxIntentos = 20;
+    while (existe && intentos < maxIntentos) {
         nuevoCodigo = generarCodigoHassanshop();
         const { data, error } = await supabaseClient
             .from('pedidos')
             .select('codigo')
             .eq('codigo', nuevoCodigo)
             .maybeSingle();
+        if (error) {
+            console.error("Error verificando unicidad:", error);
+            break;
+        }
         if (!data) existe = false;
+        intentos++;
+    }
+    if (intentos === maxIntentos) {
+        console.warn("No se pudo generar código único después de 20 intentos, se agrega timestamp");
+        nuevoCodigo = generarCodigoHassanshop() + "-" + Date.now();
     }
     return nuevoCodigo;
 }
@@ -72,7 +83,7 @@ function showAdminPanel() {
     if (codigoInput && !codigoInput.value) {
         generarCodigoUnico().then(codigo => {
             codigoInput.value = codigo;
-        });
+        }).catch(err => console.error("Error al generar código inicial:", err));
     }
 }
 
@@ -287,15 +298,24 @@ function escapeHtml(str) {
     });
 }
 
-// ===================== BOTÓN GENERAR MANUAL (opcional) =====================
-// Si existe el botón "generarCodigo" en el HTML, lo conectamos
+// ===================== BOTÓN GENERAR MANUAL (con logs) =====================
 document.addEventListener('DOMContentLoaded', () => {
     const generarBtn = document.getElementById('generarCodigo');
     if (generarBtn) {
-        generarBtn.addEventListener('click', async () => {
+        generarBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            console.log("Botón Generar clickeado");
             const codigoInput = document.getElementById('codigo');
+            if (!codigoInput) {
+                console.error("No se encontró el input #codigo");
+                return;
+            }
+            console.log("Generando código único...");
             const nuevoCodigo = await generarCodigoUnico();
+            console.log("Código generado:", nuevoCodigo);
             codigoInput.value = nuevoCodigo;
         });
+    } else {
+        console.error("No se encontró el botón #generarCodigo en el DOM");
     }
 });
