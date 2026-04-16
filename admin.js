@@ -120,28 +120,33 @@ async function cargarPedidos() {
         card.className = 'pedido-card';
         card.innerHTML = `
             <h3>${escapeHtml(pedido.codigo)} - ${escapeHtml(pedido.descripcion)}</h3>
-            <p><strong>Cliente:</strong> ${escapeHtml(pedido.cliente_nombre)} (${escapeHtml(pedido.cliente_email)})</p>
+            <p><strong>Cliente:</strong> ${escapeHtml(pedido.cliente_nombre)} (${escapeHtml(pedido.cliente_email || 'Sin email')})</p>
             <p><strong>Destino final:</strong> ${escapeHtml(pedido.destino_final || 'No especificado')}</p>
             <p><strong>WSY Tracking:</strong> ${escapeHtml(pedido.tracking_wsy || 'No asignado')}</p>
             <p><strong>Estado actual:</strong> ${estadosNombres[pedido.estado_actual - 1]}</p>
             <button onclick="editarEstado('${pedido.id}', ${pedido.estado_actual})">Actualizar estado</button>
-            <button onclick="agregarEvento('${pedido.id}', ${pedido.estado_actual})">➕ Agregar evento (ubicación, comentario)</button>
+            <button onclick="agregarEvento('${pedido.id}', ${pedido.estado_actual})">➕ Agregar evento</button>
+            <button class="btn-push" onclick="notificacionPush('${pedido.codigo}', ${pedido.estado_actual})">📢 Copiar Push</button>
+            <button class="btn-email" onclick="enviarEmailCliente('${pedido.cliente_email || ''}', '${pedido.codigo}', ${pedido.estado_actual})">✉️ Enviar Email</button>
             <hr>
         `;
         listaDiv.appendChild(card);
     }
 }
 
-// ===================== CREAR NUEVO PEDIDO =====================
+// ===================== CREAR NUEVO PEDIDO (email opcional) =====================
 formNuevo.addEventListener('submit', async (e) => {
     e.preventDefault();
     let codigo = document.getElementById('codigo').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
-    const emailCliente = document.getElementById('emailCliente').value.trim();
+    let emailCliente = document.getElementById('emailCliente').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
     const destinoFinal = document.getElementById('destinoFinal')?.value.trim() || '';
     const trackingWsy = document.getElementById('trackingWsy')?.value.trim() || '';
+
+    // Si email está vacío, lo guardamos como null
+    if (emailCliente === '') emailCliente = null;
 
     // Si no se ingresó código manual, generar uno automático
     if (!codigo) {
@@ -287,6 +292,25 @@ window.agregarEvento = async (pedidoId, estadoActual) => {
     cargarPedidos();
 };
 
+// ===================== NOTIFICACIONES =====================
+// Botón para copiar mensaje push (para usar en OneSignal dashboard)
+window.notificacionPush = (codigo, estadoActual) => {
+    const mensaje = `📦 ${codigo}: ${estadosNombres[estadoActual - 1]}. Ver más: https://hassanshop-tracking.pages.dev`;
+    navigator.clipboard.writeText(mensaje);
+    alert("✅ Mensaje copiado al portapapeles.\n\nAhora ve a https://app.onesignal.com → Nuevo mensaje → Segmento: 'Todos los suscriptores' y pega el mensaje.");
+};
+
+// Enviar email (abre cliente de correo del administrador)
+window.enviarEmailCliente = (email, codigo, estadoActual) => {
+    if (!email) {
+        alert("Este cliente no tiene email registrado.");
+        return;
+    }
+    const asunto = encodeURIComponent(`Actualización de tu pedido ${codigo}`);
+    const cuerpo = encodeURIComponent(`Hola,\n\nTu pedido ${codigo} ha cambiado a estado: ${estadosNombres[estadoActual - 1]}.\n\nPuedes ver el seguimiento en: https://hassanshop-tracking.pages.dev\n\nGracias por confiar en HassanShop.`);
+    window.location.href = `mailto:${email}?subject=${asunto}&body=${cuerpo}`;
+};
+
 // ===================== ESCAPE HTML =====================
 function escapeHtml(str) {
     if (!str) return '';
@@ -298,24 +322,15 @@ function escapeHtml(str) {
     });
 }
 
-// ===================== BOTÓN GENERAR MANUAL (con logs) =====================
+// ===================== BOTÓN GENERAR MANUAL =====================
 document.addEventListener('DOMContentLoaded', () => {
     const generarBtn = document.getElementById('generarCodigo');
     if (generarBtn) {
         generarBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            console.log("Botón Generar clickeado");
             const codigoInput = document.getElementById('codigo');
-            if (!codigoInput) {
-                console.error("No se encontró el input #codigo");
-                return;
-            }
-            console.log("Generando código único...");
             const nuevoCodigo = await generarCodigoUnico();
-            console.log("Código generado:", nuevoCodigo);
             codigoInput.value = nuevoCodigo;
         });
-    } else {
-        console.error("No se encontró el botón #generarCodigo en el DOM");
     }
 });

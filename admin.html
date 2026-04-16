@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - HassanShop Envíos</title>
-    <link rel="icon" type="image/png" href="https://i.imgur.com/5wZ2r7u.png">
+    <title>📦 Admin - HassanShop Envíos</title>
+    <!-- Favicon: camión de reparto -->
+    <link rel="icon" type="image/png"
+        href="https://raw.githubusercontent.com/Rhassanlp13/Hassanshop-tracking-/main/camion-de-reparto.png">
     <style>
         * {
             box-sizing: border-box;
@@ -107,6 +109,24 @@
         hr {
             margin: 15px 0;
         }
+
+        .btn-push {
+            background: #28a745;
+            margin-left: 5px;
+        }
+
+        .btn-push:hover {
+            background: #218838;
+        }
+
+        .btn-email {
+            background: #17a2b8;
+            margin-left: 5px;
+        }
+
+        .btn-email:hover {
+            background: #138496;
+        }
     </style>
 </head>
 
@@ -128,7 +148,7 @@
 
     <div id="admin-panel" style="display: none;">
         <div class="card">
-            <h1>Panel de Administración</h1>
+            <h1>📦 Panel de Administración</h1>
             <button id="logoutBtn" class="logout">Cerrar sesión</button>
             <div style="clear:both"></div>
         </div>
@@ -156,8 +176,8 @@
                     <input type="text" id="nombre" placeholder="Nombre completo" required>
                 </div>
                 <div class="form-group">
-                    <label>Email del cliente *</label>
-                    <input type="email" id="emailCliente" placeholder="cliente@ejemplo.com" required>
+                    <label>Email del cliente (opcional)</label>
+                    <input type="email" id="emailCliente" placeholder="cliente@ejemplo.com">
                 </div>
                 <div class="form-group">
                     <label>Teléfono (opcional)</label>
